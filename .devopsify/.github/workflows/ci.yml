@@ -1,0 +1,27 @@
+name: CI for Devopsify
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker Compose services
+      run: docker-compose build
+
+    - name: Run tests (example)
+      run: |
+        docker-compose up -d
+        sleep 5
+        curl --fail http://localhost:5005 || (echo "Web service failed!" && exit 1)
